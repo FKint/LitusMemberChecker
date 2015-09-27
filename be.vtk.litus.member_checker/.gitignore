@@ -1,0 +1,6 @@
+api_data
+entrance_log
+entrance_log.tmp
+entrance_log_*
+
+config.py
