@@ -2,7 +2,7 @@ import re
 
 
 def is_valid_barcode(entry):
-    return re.match('[0-9]{1,12}$', entry) is not None
+    return re.match('[0-9]{1,13}$', entry) is not None
 
 
 def is_valid_identification(entry):

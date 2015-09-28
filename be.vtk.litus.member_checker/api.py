@@ -38,13 +38,13 @@ class DataStore:
         # generate dictionary of academic by identification
         self.member_id_by_identification = {x['identification']: x['id'] for x in data}
         # generate dictionary of identification by barcode
-        self.member_id_by_barcode = {x['barcode']: x['id'] for x in data}
+        self.member_id_by_barcode = {x['barcode'][:12]: x['id'] for x in data}
         # generate dictionary of member by member id
         self.members_by_id = {x['id']: x for x in data}
 
     def find_member_by_barcode(self, barcode):
-        if barcode in self.member_id_by_barcode:
-            return self.find_member(self.member_id_by_barcode[barcode])
+        if barcode[:12] in self.member_id_by_barcode:
+            return self.find_member(self.member_id_by_barcode[barcode[:12]])
         return None
 
     def find_member_by_identification(self, identification):
