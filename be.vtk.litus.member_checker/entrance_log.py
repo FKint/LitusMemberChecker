@@ -24,6 +24,9 @@ class EntranceLog:
     def enter_non_member_by_identification(self, identification):
         self.__enter({'identification': identification})
 
+    def enter_member_without_card(self, name):
+        self.__enter({'name': name, 'nocard': True})
+
     def write_log(self):
         with open('entrance_log', 'w') as f:
             json.dump(self.log, f)
@@ -59,7 +62,7 @@ class EntranceLog:
     def clear_log(self):
         try:
             with open('entrance_log', 'r') as f:
-                with open('entrance_log_'+str(time.time()), 'w') as f2:
+                with open('entrance_log_' + str(time.time()), 'w') as f2:
                     json.dump(json.load(f), f2)
             self.log = []
             self.write_log()

@@ -24,34 +24,38 @@ class MemberChecker(PanedWindow):
 
     def init_ui(self):
         self.parent.title("Member Checker")
-        self.columnconfigure(2, weight=3)
+        self.columnconfigure(3, weight=3)
         self.pack(fill=BOTH, expand=True)
 
         self.input = StringVar()
         self.input_entry = Entry(self, textvariable=self.input)
         self.input_entry.bind('<Return>', self.submit)
-        self.input_entry.grid(row=0, column=0, columnspan=2, sticky=E + W)
+        self.input_entry.grid(row=0, column=0, columnspan=3, sticky=E + W)
 
         self.result = StringVar()
         self.result_label = Label(self, textvariable=self.result)
-        self.result_label.grid(row=3, column=0, columnspan=2, sticky=E + W)
+        self.result_label.grid(row=3, column=0, columnspan=3, sticky=E + W)
 
         self.name = StringVar()
         name_label = Label(self, textvariable=self.name)
-        name_label.grid(row=2, column=0, columnspan=2, sticky=E + W)
+        name_label.grid(row=2, column=0, columnspan=3, sticky=E + W)
 
         self.status = StringVar()
         status_label = Label(self, textvariable=self.status)
-        status_label.grid(row=4, column=0, columnspan=3, sticky=E + W)
+        status_label.grid(row=4, column=0, columnspan=4, sticky=E + W)
 
         submit_button = Button(self, text="Submit", command=self.submit)
-        submit_button.grid(row=1, column=1)
+        submit_button.grid(row=1, column=2)
 
         enter_without_card_button = Button(self, text="Enter without card", command=self.enter_without_card)
         enter_without_card_button.grid(row=1, column=0)
 
+        enter_member_without_card_button = Button(self, text="Enter member without card",
+                                                  command=self.enter_member_without_card)
+        enter_member_without_card_button.grid(row=1, column=1)
+
         self.entrance_log_list = Listbox(self)
-        self.entrance_log_list.grid(row=0, column=2, rowspan=4, sticky=E + W + S + N)
+        self.entrance_log_list.grid(row=0, column=3, rowspan=4, sticky=E + W + S + N)
 
         self.input_entry.focus()
 
@@ -109,6 +113,18 @@ class MemberChecker(PanedWindow):
 
         self.update_status()
 
+    def enter_member_without_card(self):
+        name = self.input.get()
+        if len(name) == 0:
+            messagebox.showinfo('Name required', 'Please enter the name of this person!')
+            return
+        self.entrance_log.enter_member_without_card(name)
+        self.result.set('Member without card!')
+        self.result_label.configure(background="orange")
+        self.name.set('')
+        self.input.set('')
+        self.update_status()
+
     def clear_result(self):
         self.result.set('')
         self.result_label.configure(background='white')
@@ -123,7 +139,8 @@ class MemberChecker(PanedWindow):
         elif helpers.is_valid_barcode(entry):
             self.enter_by_barcode(entry)
         else:
-            messagebox.showinfo('Invalid entry', 'The data entered was not recognized as a valid bar code or a valid university identification. You should click \'enter without card\' to let this person in.')
+            messagebox.showinfo('Invalid entry',
+                                'The data entered was not recognized as a valid bar code or a valid university identification. You should click \'enter without card\' to let this person in.')
             return
 
         self.input.set('')
@@ -150,15 +167,16 @@ class MemberChecker(PanedWindow):
                 s += data['barcode']
             elif 'identification' in data:
                 s += data['identification']
+            elif 'name' in data:
+                s += '[no card]' + data['name']
             else:
                 s += "-"
-
             self.entrance_log_list.insert(0, s)
 
 
 def main():
     root = Tk()
-    root.geometry("500x185+200+200")
+    root.geometry("600x185+200+200")
     app = MemberChecker(root)
     menubar = Menu(root)
     menubar.add_command(label="Clear log", command=app.clear_log)
