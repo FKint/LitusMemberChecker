@@ -67,14 +67,18 @@ class MemberChecker(PanedWindow):
     def enter_by_identification(self, identification):
         member = self.data_store.find_member_by_identification(identification)
         if member is None:
-            self.enter_non_member_by_identification(identification)
+            if messagebox.askyesno("Not a member",
+                                   "This university identification is not registered as a member. Do you want to let them in as a non-member?"):
+                self.enter_non_member_by_identification(identification)
         else:
             self.enter_member(member)
 
     def enter_by_barcode(self, barcode):
         member = self.data_store.find_member_by_barcode(barcode)
         if member is None:
-            self.enter_non_member_by_barcode(barcode)
+            if messagebox.askyesno("Not a member",
+                                   "This barcode is not registered as a member. Do you want to let them in as a non-member?"):
+                self.enter_non_member_by_barcode(barcode)
         else:
             self.enter_member(member)
 

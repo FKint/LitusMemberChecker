@@ -35,12 +35,17 @@ class DataStore:
     def set_data(self, data):
         self.data = data
         self.write_data_to_file()
-        # generate dictionary of academic by identification
-        self.member_id_by_identification = {x['identification']: x['id'] for x in data}
-        # generate dictionary of identification by barcode
-        self.member_id_by_barcode = {x['barcode'][:12]: x['id'] for x in data}
-        # generate dictionary of member by member id
-        self.members_by_id = {x['id']: x for x in data}
+        self.member_id_by_identification = dict()
+        self.members_by_id = dict()
+        self.member_id_by_barcode = dict()
+        for x in data:
+            # generate dictionary of identification by barcode
+            if 'barcode' in x:
+                self.member_id_by_barcode[x['barcode'][:12]] = x['id']
+            # generate dictionary of member by member id
+            self.members_by_id[x['id']] = x
+            # generate dictionary of academic by identification
+            self.member_id_by_identification[x['identification']] = x['id']
 
     def find_member_by_barcode(self, barcode):
         if barcode[:12] in self.member_id_by_barcode:
